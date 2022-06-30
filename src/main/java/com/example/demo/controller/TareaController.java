@@ -12,13 +12,15 @@ import com.example.demo.repository.TareaRepository;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 
+import java.util.Optional;
+
 @Controller
 public class TareaController {
 
     @Autowired
     private TareaRepository repository;
 
-    @GetMapping({ "/tareas", "/" })
+    @GetMapping({"/tareas", "/"})
     public String mostrarIndex(Model modelo) {
         modelo.addAttribute("tareas", repository.findAll());
         return "index";
@@ -39,16 +41,19 @@ public class TareaController {
 
     @GetMapping("/tareas/editar/{id}")
     public String formularioEditar(@PathVariable("id") Long id, Model modelo) {
-        modelo.addAttribute("tarea", repository.findById(id));
+        modelo.addAttribute("tarea", repository.findById(id).get());
         return "editarTarea";
     }
 
-    @PutMapping("/tareas/{id}")
+    @PostMapping("/tareas/{id}")
     public String editarTarea(@PathVariable("id") Long id, @ModelAttribute("tarea") Tarea tarea, Model modelo) {
-        Tarea _tarea = repository.findById(id).get();
-        _tarea.setTitulo(tarea.getTitulo());
-        _tarea.setDescription(tarea.getDescription());
-        repository.save(_tarea);
+        Optional<Tarea> tareaData = repository.findById(id);
+        if (tareaData.isPresent()) {
+            Tarea _tarea = tareaData.get();
+            _tarea.setTitulo(tarea.getTitulo());
+            _tarea.setDescription(tarea.getDescription());
+            repository.save(_tarea);
+        }
         return "redirect:/tareas";
     }
 
