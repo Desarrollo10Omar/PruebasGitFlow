@@ -56,6 +56,7 @@
             <td th:text="${tarea.description}"></td>
             <td>
                 <a type="button" class="btn btn-warning" th:href="@{/tareas/editar/{id}(id=${tarea.id})}">Editar</a>
+                <a type="button" class="btn btn-danger" th:href="@{/tareas/eliminar/{id}(id=${tarea.id})}">Eliminar</a>
             </td>
         </tr>
         </tbody>
